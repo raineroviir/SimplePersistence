@@ -41,17 +41,22 @@ module.exports = function(router) {
 	router.post('/quotes/:id', function(req, res) {
 		var newQuote = new Quote(req.body);
 
-		fs.appendFile('./db/' + req.params.id + '.json', JSON.stringify(newQuote, null, 2), function (err, data) {
+		fs.stat('./db/' + req.params.id + '.json', function(err, stats) {
+			if (!err) {
+				console.log(err);
+				return res.status(404).json({msg: 'specified file exists'});
+			}
+
+			fs.writeFile('./db/' + req.params.id + '.json', JSON.stringify(newQuote, null, 2), function (err, data) {
 			if (err) {
 				console.log(err);
 				return res.status(500).json({msg: 'internal server error'});
 			}
 
 			res.json({msg: JSON.stringify(newQuote) + ' has been written to ' + req.params.id + '.json'});
+			});
 		});
 	});
-
-
 
 	router.put('/quotes/:id', function(req, res) {
 		var updatedQuote = new Quote(req.body);
@@ -73,7 +78,28 @@ module.exports = function(router) {
 		});
 	});
 
-	router.patch('/quotes/:id', function(req, res))
+	router.patch('/quotes/:id', function(req, res) {
+		var newQuote = new Quote(req.body);
+		fs.stat('./db/' + req.params.id + '.json', function(err, stats) {
+			if (err) {
+				console.log(err);
+				return res.status(404).json({msg: 'specified file does not exist'});
+			}
+
+			if(stats.isFile) {
+			fs.appendFile('./db/' + req.params.id + '.json', JSON.stringify(newQuote, null, 2), function (err, data) {
+			if (err) {
+				console.log(err);
+				return res.status(500).json({msg: 'internal server error'});
+			}
+
+			res.json({msg: JSON.stringify(newQuote) + ' has been added to ' + req.params.id + '.json'});
+			});
+			}
+		});
+	});
+
+
 	router.delete('/quotes/:id', function(req, res) {
 		var updatedQuote = req.body;
 
@@ -95,4 +121,4 @@ module.exports = function(router) {
 			}
 		});
 	});
-}
+};

@@ -8,39 +8,9 @@ var chaihttp = require('chai-http');
 chai.use(chaihttp);
 
 var expect = chai.expect;
-
 var Quote = require('../models/Quote');
 
-describe('my non-mongo REST API', function() {
-
-	// before(function(done) {
-	// 	fs.mkdir('./test/testdb', function(err) {
-	// 		if (err) throw err;
-
-	// 		done();
-	// 	});
-	// });
-
-	// after(function(done) {
-	// 	fs.rmdir('./test/testdb', function(err) {
-	// 		if (err) throw err;
-
-	// 		done();
-	// 	})
-	// });
-});
-
-describe('needs existing note to work with', function() {
-	// beforeEach(function(done) {
-	// 	var testQuote = new Quote({quote: "I'm gonna let you finish, but beyonce had one of the best music videos of all time", name: "Kanye"})
-		
-	// 	fs.writeFile('./test/testdb/testname.json', JSON.stringify(testQuote, null, 2), function (err, data) {
-	// 		if (err) throw err;
-
-	// 		this.testQuote = data;
-	// 		done()
-	// 	}.bind(this));
-	// });
+describe('my Simple Persistence REST API', function() {
 
 	it('GET request', function(done) {
 		chai.request('localhost:3000')
@@ -79,6 +49,18 @@ describe('needs existing note to work with', function() {
 		});
 	});
 
+	it('PATCH request', function(done) {
+		var testQuote = new Quote({name: "kanye", quote: "westcoast bestcoast"});
+		chai.request('localhost:3000')
+		.patch('/api/quotes/testname')
+		.send(testQuote)
+		.end(function(err, res) {
+			expect(err).to.eql(null);
+			expect(res.body.msg).to.eql(JSON.stringify(testQuote) + ' has been added to ' + 'testname' + '.json');
+			done();
+		});	
+	});
+
 	it('DELETE request', function(done) {
 		var testQuote = new Quote({name: "kanye", quote: "westcoast bestcoast"});
 		chai.request('localhost:3000')
@@ -89,10 +71,4 @@ describe('needs existing note to work with', function() {
 			done();
 		});
 	});
-		// expect(this.testQuote).to.eql("Kanye");
-	// it('POST a quote', function(done) {
-	// 	chai.request('localhost:3000')
-	// 	.post('/api/quotes')
-	// });
-
 });

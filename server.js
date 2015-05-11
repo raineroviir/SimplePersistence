@@ -5,7 +5,7 @@ var express = require('express');
 var app = express();
 var quoteRoute = express.Router();
 
-require('./routes/myroute')(quoteRoute);
+require('./routes/quote_routes')(quoteRoute);
 
 app.use('/api', quoteRoute);
 
