@@ -11,3 +11,10 @@ JSON storage: 3pts
 Tests: 2pts
 
 Project Organization and Development Files: 2pts
+
+
+
+
+Thank yous for providing code snippets that I borrowed:
+Sebastiaan Meijerink for help with object constructing with args.
+http://www.codeproject.com/Tips/489809/JavaScript-Constructor-With-Configuration-Object
